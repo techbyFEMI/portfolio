@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Femi — AI Backend Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  /* ─── RESET & ROOT ──────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #080b0f;
+    --bg2:       #0d1117;
+    --bg3:       #111820;
+    --border:    #1e2a38;
+    --border2:   #243040;
+    --dim:       #3a4a5c;
+    --muted:     #5a7080;
+    --text:      #c8d8e8;
+    --bright:    #e8f4ff;
+    --accent:    #00c8ff;
+    --accent2:   #00ff9d;
+    --accent3:   #ff6b35;
+    --accent4:   #a78bfa;
+    --warn:      #fbbf24;
+
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Syne', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  /* ─── SCANLINES OVERLAY ─────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,200,255,0.015) 2px,
+      rgba(0,200,255,0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ─── SCROLLBAR ─────────────────────────────────── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
+
+  /* ─── NAV ───────────────────────────────────────── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(1.5rem, 5vw, 4rem);
+    height: 56px;
+    background: rgba(8,11,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent2); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 6px var(--accent2);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ─── HERO ──────────────────────────────────────── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px clamp(1.5rem, 8vw, 8rem) 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: 20%; left: -10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,200,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-glow-2 {
+    position: absolute;
+    bottom: 0; right: -5%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,255,157,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent2);
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-tag::before { content: '//'; color: var(--dim); }
+
+  .hero-name {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: clamp(3rem, 10vw, 7rem);
+    line-height: 1;
+    color: var(--bright);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.35s forwards;
+  }
+
+  .hero-name .accent { color: var(--accent); }
+
+  .hero-title {
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.5s forwards;
+  }
+
+  .hero-title .hi { color: var(--accent3); }
+
+  .hero-bio {
+    max-width: 540px;
+    color: var(--text);
+    font-size: 0.88rem;
+    line-height: 1.9;
+    margin-bottom: 2.5rem;
+    border-left: 2px solid var(--accent);
+    padding-left: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.65s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.8s forwards;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 600;
+  }
+
+  .btn-primary:hover {
+    background: #33d6ff;
+    box-shadow: 0 0 20px rgba(0,200,255,0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border2);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--dim);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+
+  .hero-scroll::after {
+    content: '';
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--dim), transparent);
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── SECTION BASE ──────────────────────────────── */
+  section {
+    padding: 5rem clamp(1.5rem, 8vw, 8rem);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-num {
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: var(--bright);
+    letter-spacing: -0.01em;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--border2), transparent);
+  }
+
+  /* ─── TECH STACK ────────────────────────────────── */
+  #stack { background: var(--bg2); }
+
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .stack-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stack-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--card-accent, var(--accent)), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .stack-card:hover { border-color: var(--card-accent, var(--accent)); transform: translateY(-3px); }
+  .stack-card:hover::before { opacity: 1; }
+
+  .stack-card-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--card-accent, var(--accent));
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .stack-card-label::before { content: '▸'; }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+    border: 1px solid;
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+
+  /* backend tags */
+  .tag-py    { color: #4ec9b0; border-color: #4ec9b040; background: #4ec9b010; }
+  .tag-fa    { color: #00c8ff; border-color: #00c8ff40; background: #00c8ff10; }
+  .tag-sa    { color: #ff6b35; border-color: #ff6b3540; background: #ff6b3510; }
+  .tag-pd    { color: #e879f9; border-color: #e879f940; background: #e879f910; }
+  .tag-or    { color: #fbbf24; border-color: #fbbf2440; background: #fbbf2410; }
+
+  /* db tags */
+  .tag-pg    { color: #60a5fa; border-color: #60a5fa40; background: #60a5fa10; }
+  .tag-neon  { color: #00ff9d; border-color: #00ff9d40; background: #00ff9d10; }
+  .tag-redis { color: #ff6b6b; border-color: #ff6b6b40; background: #ff6b6b10; }
+  .tag-idx   { color: #a78bfa; border-color: #a78bfa40; background: #a78bfa10; }
+  .tag-part  { color: #a78bfa; border-color: #a78bfa40; background: #a78bfa10; }
+
+  /* ai tags */
+  .tag-ai    { color: #fbbf24; border-color: #fbbf2440; background: #fbbf2410; }
+  .tag-lc    { color: #00c8ff; border-color: #00c8ff40; background: #00c8ff10; }
+  .tag-ds    { color: #4ec9b0; border-color: #4ec9b040; background: #4ec9b010; }
+
+  /* devops tags */
+  .tag-d     { color: #60a5fa; border-color: #60a5fa40; background: #60a5fa10; }
+  .tag-rn    { color: #00ff9d; border-color: #00ff9d40; background: #00ff9d10; }
+  .tag-gh    { color: #e2e8f0; border-color: #e2e8f040; background: #e2e8f008; }
+
+  /* ─── PROJECTS ──────────────────────────────────── */
+  #projects { background: var(--bg); }
+
+  .projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    align-items: start;
+    transition: border-color 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--p-accent, var(--accent));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .project-card:hover {
+    border-color: var(--p-accent, var(--accent));
+    transform: translateX(4px);
+  }
+
+  .project-card:hover::after { opacity: 1; }
+
+  .project-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .project-name {
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--bright);
+    letter-spacing: -0.01em;
+  }
+
+  .project-badge {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+
+  .badge-live { background: rgba(0,255,157,0.15); color: var(--accent2); border: 1px solid rgba(0,255,157,0.3); }
+  .badge-partial { background: rgba(251,191,36,0.1); color: var(--warn); border: 1px solid rgba(251,191,36,0.3); }
+  .badge-dev { background: rgba(167,139,250,0.1); color: var(--accent4); border: 1px solid rgba(167,139,250,0.3); }
+  .badge-hack { background: rgba(255,107,53,0.1); color: var(--accent3); border: 1px solid rgba(255,107,53,0.3); }
+
+  .project-desc {
+    font-size: 0.85rem;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    max-width: 680px;
+  }
+
+  .project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .ptag {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 3px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .project-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+  .landing{
+   transform: scale(0.85);
+   transform-origin: 0 0;
+   width:50%;
+   margin: 0 auto;
+   overflow:hidden;
+   box-shadow: 0 0 12px 4px rgba(255, 255, 255, 0.6);}
+
+   .landing2{
+   transform: scale(0.85);
+   transform-origin: 0 0;
+   width:50%;
+   margin: 0 auto;
+   overflow:hidden;
+   box-shadow: 0 0 12px 4px rgba(255, 255, 255, 0.6);}
+   
+   .proj-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .proj-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ─── CONTACT ───────────────────────────────────── */
+  #contact { background: var(--bg2); }
+
+  .contact-inner {
+    max-width: 640px;
+  }
+
+  .contact-prompt {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    line-height: 1.9;
+  }
+
+  .contact-prompt .hl { color: var(--accent2); }
+
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1.2rem;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.8rem;
+    background: var(--bg3);
+    transition: all 0.2s;
+  }
+
+  .social-link:hover {
+    border-color: var(--s-color, var(--accent));
+    color: var(--s-color, var(--accent));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+
+  .social-icon { font-size: 1rem; }
+
+  .terminal-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.9rem;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .terminal-body {
+    padding: 1.2rem 1.5rem;
+    font-size: 0.8rem;
+    line-height: 2;
+  }
+
+  .t-line { display: block; }
+  .t-prompt { color: var(--accent2); }
+  .t-cmd { color: var(--bright); }
+  .t-out { color: var(--muted); }
+  .t-val { color: var(--accent); }
+  .t-cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--accent);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ─── FOOTER ────────────────────────────────────── */
+  footer {
+    padding: 1.5rem clamp(1.5rem, 8vw, 8rem);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.7rem;
+    color: var(--dim);
+  }
+
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+
+  /* ─── MOBILE ────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .nav-status { font-size: 0.65rem; }
+
+    .project-card {
+      grid-template-columns: 1fr;
+    }
+
+    .project-links {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+  }
+
+  /* ─── REVEAL ON SCROLL ──────────────────────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ─────────────────────────────────────── -->
+<nav>
+  <a href="#hero" class="nav-logo">femi<span>.dev</span></a>
+  <ul class="nav-links">
+    <li><a href="#stack">stack</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+  <div class="nav-status">
+    <span class="status-dot"></span>
+    open to opportunities
+  </div>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+
+  <span class="hero-tag">AI Backend Engineer · Nigeria</span>
+  <h1 class="hero-name">Femi<span class="accent">.</span></h1>
+  <p class="hero-title">
+    Building <span class="hi">AI-Driven backend</span> systems.
+  </p>
+  <p class="hero-bio">
+    I’m a backend developer focused on building AI-driven systems that solve real-world problems.
+    I work primarily with Python, FastAPI, and PostgreSQL to design systems that combine machine learning, APIs, and intelligent automation.
+    My projects focus on turning complex ideas into practical products. My goal is to help people make better decisions and solve real problems with my skills.
+
+  </p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">↓ view projects</a>
+    <a href="https://github.com/techbyFEMI" target="_blank" class="btn btn-ghost"><span class="social-icon">⌥</span> GitHub</a>
+  </div>
+
+  <div class="hero-scroll">scroll</div>
+</section>
+
+<!-- ── TECH STACK ──────────────────────────────── -->
+<section id="stack">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Tech Stack</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="stack-grid">
+
+    <!-- Backend -->
+    <div class="stack-card reveal" style="--card-accent: #00c8ff;">
+      <div class="stack-card-label">Backend</div>
+      <div class="tags">
+        <span class="tag tag-py">Python</span>
+        <span class="tag tag-fa">FastAPI</span>
+        <span class="tag tag-sa">SQLAlchemy ORM</span>
+        <span class="tag tag-pd">Pydantic</span>
+      </div>
+    </div>
+
+    <!-- Databases -->
+    <div class="stack-card reveal" style="--card-accent: #60a5fa;">
+      <div class="stack-card-label">Databases</div>
+      <div class="tags">
+        <span class="tag tag-pg">PostgreSQL</span>
+        <span class="tag tag-neon">Neon</span>
+        <span class="tag tag-redis">Redis</span>
+        <span class="tag tag-idx">Indexing</span>
+        <span class="tag tag-part">Partitioning</span>
+      </div>
+    </div>
+
+    <!-- AI / ML -->
+    <div class="stack-card reveal" style="--card-accent: #fbbf24;">
+      <div class="stack-card-label">AI / ML</div>
+      <div class="tags">
+        <span class="tag tag-ai">LLM Integration</span>
+        <span class="tag tag-lc">Multi-model Chains</span>
+        <span class="tag tag-ds">Data Science</span>
+        <span class="tag tag-ai">LangGraph</span>
+        <span class="tag tag-or">OpenRouter</span>
+      </div>
+    </div>
+
+    <!-- DevOps & Infra -->
+    <div class="stack-card reveal" style="--card-accent: #00ff9d;">
+      <div class="stack-card-label">DevOps & Infra</div>
+      <div class="tags">
+        <span class="tag tag-d">Docker</span>
+        <span class="tag tag-rn">Render</span>
+         <span class="tag tag-rn">Vercel</span>
+        <span class="tag tag-rn">Railway</span>
+        <span class="tag tag-gh">Git / GitHub</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── PROJECTS ────────────────────────────────── -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Projects</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="projects-list">
+
+    <!-- GARD -->
+    <div class="project-card reveal" style="--p-accent: #ff6b35;">
+      <div>
+        <div class="project-meta">
+            <div class="garddiv">
+                <img src="gardlanding2.png" class="landing">
+            </div>
+            
+          <span class="project-name">GARD</span>
+          <span class="project-badge badge-live">✦ Live</span>
+          <!-- <span class="project-badge badge-hack">Hackathon Winner</span> -->
+        </div>
+        <p class="project-desc">
+          Freelancer Contract Risk Detector — built for the DevCareer × Raenest Hackathon.
+          GARD analyzes freelance contracts using LLMs to surface hidden risks, unfair clauses,
+          and payment traps before you sign. Upload a contract, get a risk report.
+          Deployed to Render.
+        </p>
+        <div class="project-stack">
+          <span class="ptag">FastAPI</span>
+          <span class="ptag">Python</span>
+          <span class="ptag">OpenRouter</span>
+          <span class="ptag">PostgreSQL</span>
+          <span class="ptag">Pydantic</span>
+          <span class="ptag">Render</span>
+        </div>
+      </div>
+      <div class="project-links">
+        <a href="https://gardfrontend.vercel.app/" class="proj-link">↗ Live Demo</a>
+        <a href="https://github.com/techbyFEMI/GARD" target="_blank" class="proj-link">⌥ GitHub</a>
+      </div>
+    </div>
+
+    <!-- Health Risk API -->
+    <div class="project-card reveal" style="--p-accent: #00c8ff;">
+      <div>
+        <div class="project-meta">
+            <div class="healthdiv">
+                <img src="apiland2.png" class="landing2">
+            </div>
+          
+          <span class="project-name">Health Risk API</span>
+          <span class="project-badge badge-partial">✦ Live</span>
+        </div>
+        <p class="project-desc">
+          A production-grade health risk assessment API (PJCT01) that ingests patient health
+          data, computes risk scores, and surfaces actionable insights via a clean REST interface.
+          Built on FastAPI with SQLAlchemy ORM and PostgreSQL on Neon. Partially deployed to Render.
+        </p>
+        <div class="project-stack">
+          <span class="ptag">FastAPI</span>
+          <span class="ptag">Python</span>
+          <span class="ptag">SQLAlchemy</span>
+          <span class="ptag">PostgreSQL / Neon</span>
+          <span class="ptag">Pydantic</span>
+          <span class="ptag">Render</span>
+        </div>
+      </div>
+      <div class="project-links">
+        <a href="https://pjct01.onrender.com/docs" target="_blank" class="proj-link">API ENDPOINT</a>
+        <a href="https://github.com/techbyFEMI/PJCT01" target="_blank" class="proj-link">⌥ GitHub</a>
+      </div>
+    </div>
+
+    <!-- Eductar -->
+    <div class="project-card reveal" style="--p-accent: #a78bfa;">
+      <div>
+        <div class="project-meta">
+          <span class="project-name">Eductar</span>
+          <span class="project-badge badge-dev">⟳ In Development</span>
+        </div>
+        <p class="project-desc">
+          An AI-powered educational platform that ingests PDF lecture notes and restructures
+          their content through Bloom's Taxonomy — turning raw slides into progressive,
+          pedagogically sound learning material. Features multi-model LLM fallback chains via
+          OpenRouter, vision model support for scanned pages, and chunked processing with
+          rate-limit awareness.
+        </p>
+        <div class="project-stack">
+          <span class="ptag">FastAPI</span>
+          <span class="ptag">Python</span>
+          <span class="ptag">OpenRouter</span>
+          <span class="ptag">Vision Models</span>
+          <span class="ptag">PostgreSQL</span>
+          <span class="ptag">Firebase FCM</span>
+          <span class="ptag">APScheduler</span>
+        </div>
+      </div>
+      <div class="project-links">
+        <a href="https://github.com/techbyFEMI" target="_blank" class="proj-link">⌥ GitHub</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── CONTACT ─────────────────────────────────── -->
+<section id="contact">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Contact</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="contact-inner">
+    <p class="contact-prompt reveal">
+      I'm <span class="hl">open to backend & AI engineering roles</span>, collaborations,
+      and conversations about building AI systems in Africa.
+      Find me on X or send a mail.
+    </p>
+
+   <div class="socials reveal">
+  <a href="https://x.com/build_w_Femi" target="_blank" class="social-link" style="--s-color: #1d9bf0;">
+    <span class="social-icon">𝕏</span> @build_w_Femi
+  </a>
+  <a href="mailto:techbyfemi@gmail.com" target="_blank" class="social-link" style="--s-color: #e2e8f0;">
+    <span class="social-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-.904.732-1.636 1.636-1.636h.749L12 10.73l9.615-6.909h.749A1.636 1.636 0 0 1 24 5.457z"/>
+      </svg>
+    </span> Gmail
+  </a>
+</div>
+
+    <div class="terminal-block reveal">
+      <div class="terminal-bar">
+        <span class="dot dot-r"></span>
+        <span class="dot dot-y"></span>
+        <span class="dot dot-g"></span>
+      </div>
+      <div class="terminal-body">
+        <span class="t-line"><span class="t-prompt">femi@dev</span> ~ $ <span class="t-cmd">cat profile.json</span></span>
+        <span class="t-line"><span class="t-out">{</span></span>
+        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"name":</span> <span class="t-val">"Femi"</span><span class="t-out">,</span></span>
+        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"role":</span> <span class="t-val">"AI Backend Engineer"</span><span class="t-out">,</span></span>
+        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"location":</span> <span class="t-val">"Nigeria 🇳🇬"</span><span class="t-out">,</span></span>
+        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"stack":</span> <span class="t-val">["FastAPI", "PostgreSQL", "Python", "LLMs"]</span><span class="t-out">,</span></span>
+        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"shipping AI-backend systems":</span> <span class="t-val">true</span><span class="t-out">,</span></span>
+        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"open_to_work":</span> <span class="t-val">true</span></span>
+        <span class="t-line"><span class="t-out">}</span></span>
+        <span class="t-line"><span class="t-prompt">femi@dev</span> ~ $ <span class="t-cursor"></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ──────────────────────────────────── -->
+<footer>
+  <span>© 2025 Femi · Shipping production grade AI-backend systems</span>
+  <span>
+    <a href="https://x.com/build_w_Femi" target="_blank">@build_w_Femi</a>
+  </span>
+</footer>
+
+<!-- ── SCROLL REVEAL SCRIPT ────────────────────── -->
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        // stagger siblings
+        const siblings = [...e.target.parentElement.querySelectorAll('.reveal')];
+        const idx = siblings.indexOf(e.target);
+        e.target.style.transitionDelay = `${idx * 80}ms`;
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
