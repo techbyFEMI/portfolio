@@ -43,6 +43,7 @@
 
   ::selection { background: var(--accent); color: var(--bg); }
 
+  /* scanlines — subtle, non-intrusive */
   body::before {
     content: '';
     position: fixed;
@@ -59,7 +60,7 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
 
-  /* NAV */
+  /* ── NAV ─────────────────────────────────────── */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -78,7 +79,6 @@
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    text-decoration: none;
     cursor: pointer;
   }
 
@@ -129,7 +129,7 @@
   }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  /* LIGHTBOX */
+  /* ── LIGHTBOX ─────────────────────────────────── */
   .lightbox {
     display: none;
     position: fixed;
@@ -156,7 +156,7 @@
     to   { transform: scale(1);   opacity: 1; }
   }
 
-  /* HERO */
+  /* ── HERO ─────────────────────────────────────── */
   #hero {
     min-height: 100vh;
     display: flex;
@@ -167,15 +167,6 @@
     overflow: hidden;
   }
 
-  .hero-grid-bg {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 60px 60px;
-    opacity: 0.3;
-    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%);
-  }
   .hero-glow {
     position: absolute; top: 20%; left: -10%;
     width: 600px; height: 600px;
@@ -189,7 +180,6 @@
     pointer-events: none;
   }
 
-  /* hero row: text left, avatar right */
   .hero-content {
     display: flex;
     align-items: center;
@@ -237,6 +227,7 @@
   }
   .hero-title .hi { color: var(--accent3); }
 
+  /* blue left border on bio — restored */
   .hero-bio {
     max-width: 540px;
     color: var(--text);
@@ -257,13 +248,12 @@
     animation: fadeUp 0.7s 0.8s forwards;
   }
 
-  /* desktop avatar */
+  /* desktop avatar — 300px as in the document */
   .hero-avatar-wrap {
     flex-shrink: 0;
     opacity: 0;
     animation: fadeUp 0.7s 0.5s forwards;
   }
-
   .hero-avatar {
     width: 300px; height: 300px;
     border-radius: 50%;
@@ -279,7 +269,7 @@
     transform: scale(1.04);
   }
 
-  /* BUTTONS */
+  /* ── BUTTONS ─────────────────────────────────── */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -294,10 +284,27 @@
     cursor: pointer;
     border: none;
   }
-  .btn-primary { background: var(--accent); color: var(--bg); font-weight: 600; }
-  .btn-primary:hover { background: #33d6ff; box-shadow: 0 0 20px rgba(0,200,255,0.4); transform: translateY(-1px); }
-  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border2); }
-  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+  /* blue primary button — restored */
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 600;
+  }
+  .btn-primary:hover {
+    background: #33d6ff;
+    box-shadow: 0 0 20px rgba(0,200,255,0.4);
+    transform: translateY(-1px);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border2);
+  }
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
 
   .hero-scroll {
     position: absolute;
@@ -328,10 +335,8 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* SECTIONS */
+  /* ── SECTIONS ─────────────────────────────────── */
   section { padding: 5rem clamp(1.5rem, 8vw, 8rem); }
-
-  /* Offset so fixed nav doesn't hide headings on jump */
   #stack, #projects, #contact { scroll-margin-top: 56px; }
 
   .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; }
@@ -345,7 +350,7 @@
   }
   .section-line { flex: 1; height: 1px; background: linear-gradient(to right, var(--border2), transparent); }
 
-  /* STACK */
+  /* ── TECH STACK — original 4-card layout ──────── */
   #stack { background: var(--bg2); }
 
   .stack-grid {
@@ -417,7 +422,7 @@
   .tag-rn    { color:#00ff9d; border-color:#00ff9d40; background:#00ff9d10; }
   .tag-gh    { color:#e2e8f0; border-color:#e2e8f040; background:#e2e8f008; }
 
-  /* PROJECTS */
+  /* ── PROJECTS ─────────────────────────────────── */
   #projects { background: var(--bg); }
 
   .projects-list { display: flex; flex-direction: column; gap: 2rem; }
@@ -442,47 +447,41 @@
   .project-card:hover { border-color: var(--p-accent, var(--accent)); transform: translateX(4px); }
   .project-card:hover::after { opacity: 1; }
 
-  /* cinematic banner */
+  /* screenshot shown in full — padded frame approach */
   .project-banner {
     width: 100%;
-    height: 210px;
-    overflow: hidden;
-    position: relative;
-    border-bottom: 1px solid var(--border);
     background: var(--bg2);
+    padding: 1rem 1rem 0;
+    border-bottom: 1px solid var(--border);
   }
   .project-banner img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top;
+    height: auto;
     display: block;
-    transition: transform 0.5s ease;
+    border-radius: 6px 6px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    transition: transform 0.4s ease;
   }
-  .project-card:hover .project-banner img { transform: scale(1.04); }
+  .project-card:hover .project-banner img { transform: scale(1.02); }
 
-  /* fade-to-card gradient at bottom of banner */
-  .project-banner::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, transparent 45%, var(--bg3) 100%);
-    pointer-events: none;
-  }
-
-  /* badges float over banner */
+  /* badges sit above the image */
   .banner-badges {
-    position: absolute;
-    top: 0.75rem; right: 0.75rem;
     display: flex;
     gap: 0.4rem;
-    z-index: 2;
+    padding: 0 0 0.6rem;
+    margin-top: 0.6rem;
   }
 
-  /* card body */
   .project-body { padding: 1.25rem 1.75rem 1.75rem; }
 
-  .project-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+  .project-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+    flex-wrap: wrap;
+  }
 
   .project-name {
     font-family: var(--font-sans);
@@ -534,22 +533,27 @@
 
   .project-links { display: flex; gap: 0.5rem; flex-shrink: 0; }
 
+  /* blue accent on project links — restored */
   .proj-link {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     font-size: 0.72rem;
-    color: var(--muted);
+    color: var(--accent);
     text-decoration: none;
     padding: 0.35rem 0.75rem;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(0,200,255,0.3);
     border-radius: 4px;
     transition: all 0.2s;
     white-space: nowrap;
   }
-  .proj-link:hover { color: var(--accent); border-color: var(--accent); }
+  .proj-link:hover {
+    background: rgba(0,200,255,0.08);
+    border-color: var(--accent);
+    color: var(--bright);
+  }
 
-  /* CONTACT */
+  /* ── CONTACT ──────────────────────────────────── */
   #contact { background: var(--bg2); }
   .contact-inner { max-width: 640px; }
   .contact-prompt { font-size: 0.85rem; color: var(--muted); margin-bottom: 2rem; line-height: 1.9; }
@@ -604,7 +608,7 @@
   }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-  /* FOOTER */
+  /* ── FOOTER ───────────────────────────────────── */
   footer {
     padding: 1.5rem clamp(1.5rem, 8vw, 8rem);
     border-top: 1px solid var(--border);
@@ -619,11 +623,11 @@
   footer a { color: var(--muted); text-decoration: none; }
   footer a:hover { color: var(--accent); }
 
-  /* REVEAL */
+  /* ── REVEAL ───────────────────────────────────── */
   .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
   .reveal.visible { opacity: 1; transform: none; }
 
-  /* MOBILE */
+  /* ── MOBILE ───────────────────────────────────── */
   @media (max-width: 640px) {
     .hero-avatar-wrap { display: none; }
     .nav-avatar { display: block; }
@@ -671,25 +675,25 @@
   <div class="hero-content">
     <div class="hero-text">
       <span class="hero-tag">AI Backend Engineer · Nigeria</span>
-  <h1 class="hero-name">Femi<span class="accent">.</span></h1>
-  <p class="hero-title">
-    Building <span class="hi">AI-driven backend</span> systems.
-  </p>
-  <p class="hero-bio">
-    I build AI-driven backend systems and developer tools.
-Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent automation that turn complex workflows into working products.
-  </p>
+      <h1 class="hero-name">Femi<span class="accent">.</span></h1>
+      <p class="hero-title">
+        Building <span class="hi">AI-driven backend</span> systems.
+      </p>
+      <p class="hero-bio">
+        I build AI-driven backend systems and developer tools.
+        Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent automation
+        that turn complex workflows into working products.
+      </p>
       <div class="hero-cta">
-        <a href="#projects" class="btn btn-primary">↓ view projects</a>
-        <a href="https://github.com/techbyFEMI" target="_blank" class="btn btn-ghost">⌥ GitHub</a>
+        <a href="#projects" class="btn btn-primary">view projects</a>
+        <a href="https://github.com/techbyFEMI" target="_blank" class="btn btn-ghost">GitHub</a>
       </div>
     </div>
 
-    <!-- desktop avatar -->
     <div class="hero-avatar-wrap">
       <img src="me.jpg" alt="Femi" class="hero-avatar" onclick="openLightbox()" />
     </div>
-
+  </div>
 
   <div class="hero-scroll">scroll</div>
 </section>
@@ -757,9 +761,9 @@ Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent au
     <!-- GARD -->
     <div class="project-card reveal" style="--p-accent:#ff6b35;">
       <div class="project-banner">
-        <img src="gardlanding2.png" alt="GARD — AI Contract Risk Detector" />
+        <img src="gardlanding2.png" alt="GARD" />
         <div class="banner-badges">
-          <span class="project-badge badge-live">✦ Live</span>
+          <span class="project-badge badge-live">Live</span>
           <span class="project-badge badge-hack">Hackathon</span>
         </div>
       </div>
@@ -768,7 +772,7 @@ Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent au
           <span class="project-name">GARD</span>
         </div>
         <p class="project-desc">
-          Freelancer Contract Risk Detector — built for the DevCareer × Raenest Hackathon.
+          Freelancer Contract Risk Detector — built for the DevCareer x Raenest Hackathon.
           GARD analyzes freelance contracts using LLMs to surface hidden risks, unfair clauses,
           and payment traps before you sign.
         </p>
@@ -782,8 +786,8 @@ Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent au
             <span class="ptag">Render</span>
           </div>
           <div class="project-links">
-            <a href="https://gardfrontend.vercel.app/" target="_blank" class="proj-link">↗ Live Demo</a>
-            <a href="https://github.com/techbyFEMI/GARD" target="_blank" class="proj-link">⌥ GitHub</a>
+            <a href="https://gardfrontend.vercel.app/" target="_blank" class="proj-link">Live Demo</a>
+            <a href="https://github.com/techbyFEMI/GARD" target="_blank" class="proj-link">GitHub</a>
           </div>
         </div>
       </div>
@@ -794,7 +798,7 @@ Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent au
       <div class="project-banner">
         <img src="apiland2.png" alt="Health Risk API" />
         <div class="banner-badges">
-          <span class="project-badge badge-live">✦ Live</span>
+          <span class="project-badge badge-live">Live</span>
         </div>
       </div>
       <div class="project-body">
@@ -817,7 +821,7 @@ Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent au
           </div>
           <div class="project-links">
             <a href="https://pjct01.onrender.com/docs" target="_blank" class="proj-link">API Docs</a>
-            <a href="https://github.com/techbyFEMI/PJCT01" target="_blank" class="proj-link">⌥ GitHub</a>
+            <a href="https://github.com/techbyFEMI/PJCT01" target="_blank" class="proj-link">GitHub</a>
           </div>
         </div>
       </div>
@@ -825,11 +829,10 @@ Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent au
 
     <!-- Eductar -->
     <div class="project-card reveal" style="--p-accent:#a78bfa;">
-       <div class="project-banner">
+      <div class="project-banner">
         <img src="eductar landing.png" alt="Eductar" />
-       </div>
         <div class="banner-badges">
-          <span class="project-badge badge-dev">✦ Live</span>
+          <span class="project-badge badge-live">Live</span>
         </div>
       </div>
       <div class="project-body">
@@ -852,9 +855,8 @@ Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent au
             <span class="ptag">APScheduler</span>
           </div>
           <div class="project-links">
-            <a href="https://github.com/techbyFEMI/EDUCTAR" target="_blank" class="proj-link">⌥ GitHub</a>
+            <a href="https://github.com/techbyFEMI/EDUCTAR" target="_blank" class="proj-link">GitHub</a>
             <a href="https://eductar-vpkx.onrender.com/docs#/" target="_blank" class="proj-link">API Docs</a>
-
           </div>
         </div>
       </div>
@@ -878,7 +880,9 @@ Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent au
     </p>
     <div class="socials reveal">
       <a href="https://x.com/build_w_Femi" target="_blank" class="social-link" style="--s-color:#1d9bf0;">
-        <span class="social-icon">𝕏</span> @build_w_Femi
+        <span class="social-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.263 5.633L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </span> @build_w_Femi
       </a>
       <a href="mailto:techbyfemi@gmail.com" class="social-link" style="--s-color:#e2e8f0;">
         <span class="social-icon">
@@ -899,7 +903,7 @@ Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent au
         <span class="t-line"><span class="t-out">{</span></span>
         <span class="t-line"><span class="t-out">&nbsp;&nbsp;"name":</span> <span class="t-val">"Femi"</span><span class="t-out">,</span></span>
         <span class="t-line"><span class="t-out">&nbsp;&nbsp;"role":</span> <span class="t-val">"AI Backend Engineer"</span><span class="t-out">,</span></span>
-        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"location":</span> <span class="t-val">"Nigeria 🇳🇬"</span><span class="t-out">,</span></span>
+        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"location":</span> <span class="t-val">"Nigeria"</span><span class="t-out">,</span></span>
         <span class="t-line"><span class="t-out">&nbsp;&nbsp;"stack":</span> <span class="t-val">["FastAPI", "PostgreSQL", "Python", "LLMs"]</span><span class="t-out">,</span></span>
         <span class="t-line"><span class="t-out">&nbsp;&nbsp;"shipping AI-backend systems":</span> <span class="t-val">true</span><span class="t-out">,</span></span>
         <span class="t-line"><span class="t-out">&nbsp;&nbsp;"open_to_work":</span> <span class="t-val">true</span></span>
@@ -917,6 +921,9 @@ Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent au
 </footer>
 
 <script>
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
   /* SCROLL REVEAL */
   const reveals = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries) => {
@@ -943,7 +950,7 @@ Using Python, FastAPI, and PostgreSQL, I design scalable APIs and intelligent au
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-  /* SMOOTH SCROLL — NAV OFFSET FIX */
+  /* SMOOTH SCROLL WITH OFFSET */
   document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', function(e) {
       const target = document.querySelector(this.getAttribute('href'));
