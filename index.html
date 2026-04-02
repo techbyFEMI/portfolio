@@ -43,19 +43,6 @@
 
   ::selection { background: var(--accent); color: var(--bg); }
 
-  /* scanlines — subtle, non-intrusive */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg, transparent, transparent 2px,
-      rgba(0,200,255,0.015) 2px, rgba(0,200,255,0.015) 4px
-    );
-    pointer-events: none;
-    z-index: 9999;
-  }
-
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
@@ -227,7 +214,6 @@
   }
   .hero-title .hi { color: var(--accent3); }
 
-  /* blue left border on bio — restored */
   .hero-bio {
     max-width: 540px;
     color: var(--text);
@@ -248,7 +234,6 @@
     animation: fadeUp 0.7s 0.8s forwards;
   }
 
-  /* desktop avatar — 300px as in the document */
   .hero-avatar-wrap {
     flex-shrink: 0;
     opacity: 0;
@@ -284,7 +269,6 @@
     cursor: pointer;
     border: none;
   }
-  /* blue primary button — restored */
   .btn-primary {
     background: var(--accent);
     color: var(--bg);
@@ -350,7 +334,7 @@
   }
   .section-line { flex: 1; height: 1px; background: linear-gradient(to right, var(--border2), transparent); }
 
-  /* ── TECH STACK — original 4-card layout ──────── */
+  /* ── TECH STACK ───────────────────────────────── */
   #stack { background: var(--bg2); }
 
   .stack-grid {
@@ -447,7 +431,6 @@
   .project-card:hover { border-color: var(--p-accent, var(--accent)); transform: translateX(4px); }
   .project-card:hover::after { opacity: 1; }
 
-  /* screenshot shown in full — padded frame approach */
   .project-banner {
     width: 100%;
     background: var(--bg2);
@@ -465,7 +448,6 @@
   }
   .project-card:hover .project-banner img { transform: scale(1.02); }
 
-  /* badges sit above the image */
   .banner-badges {
     display: flex;
     gap: 0.4rem;
@@ -533,7 +515,6 @@
 
   .project-links { display: flex; gap: 0.5rem; flex-shrink: 0; }
 
-  /* blue accent on project links — restored */
   .proj-link {
     display: inline-flex;
     align-items: center;
@@ -668,7 +649,6 @@
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-grid-bg"></div>
   <div class="hero-glow"></div>
   <div class="hero-glow-2"></div>
 
