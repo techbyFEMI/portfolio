@@ -11,9 +11,9 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:        #080b0f;
-    --bg2:       #0d1117;
-    --bg3:       #111820;
+    --bg:        #000000;
+    --bg2:       #0a0a0a;
+    --bg3:       #0f0f0f;
     --border:    #1e2a38;
     --border2:   #243040;
     --dim:       #3a4a5c;
@@ -152,20 +152,10 @@
     padding: 80px clamp(1.5rem, 8vw, 8rem) 4rem;
     position: relative;
     overflow: hidden;
+    background: #000;
   }
 
-  .hero-glow {
-    position: absolute; top: 20%; left: -10%;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(0,200,255,0.06) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .hero-glow-2 {
-    position: absolute; bottom: 0; right: -5%;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(0,255,157,0.05) 0%, transparent 70%);
-    pointer-events: none;
-  }
+  
 
   .hero-content {
     display: flex;
@@ -643,15 +633,12 @@
   </ul>
   <div class="nav-status">
     <span class="status-dot"></span>
-    open to work
+    open to opportunities
   </div>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-glow-2"></div>
-
   <div class="hero-content">
     <div class="hero-text">
       <span class="hero-tag">AI Backend Engineer · Nigeria</span>
@@ -751,7 +738,7 @@
           <span class="project-name">GARD</span>
         </div>
         <p class="project-desc">
-          Freelancer Contract Risk Detector- GARD
+          Freelancer Contract Risk Detector — built for the DevCareer x Raenest Hackathon.
           GARD analyzes freelance contracts using LLMs to surface hidden risks, unfair clauses,
           and payment traps before you sign.
         </p>
@@ -863,7 +850,7 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.263 5.633L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
         </span> @build_w_Femi
       </a>
-      <a href="mailto:techbyfemi@gmail.com" class="social-link" style="--s-color:#e2e8f0;">
+      <a href="/cdn-cgi/l/email-protection#d2a6b7b1bab0abb4b7bfbb92b5bfb3bbbefcb1bdbf" class="social-link" style="--s-color:#e2e8f0;">
         <span class="social-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
             <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-.904.732-1.636 1.636-1.636h.749L12 10.73l9.615-6.909h.749A1.636 1.636 0 0 1 24 5.457z"/>
@@ -899,7 +886,7 @@
   <span><a href="https://x.com/build_w_Femi" target="_blank">@build_w_Femi</a></span>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
 
@@ -936,7 +923,7 @@
       if (!target) return;
       e.preventDefault();
       const navH = document.querySelector('nav').offsetHeight;
-      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - navH, behavior: 'smooth' });
+       window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - navH, behavior: 'smooth' });
     });
   });
 </script>
