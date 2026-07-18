@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <meta name="google-site-verification" content="ORkKzXmO8sngK1FbwinIIgx2HSlIjPlFOxHIw4S74xU" />
- <meta name="google-site-verification" content="76VWdSsOMul72ha_M550TWY8nFy7AVQ2XMma5UN1aD8" />
+<meta name="google-site-verification" content="ORkKzXmO8sngK1FbwinIIgx2HSlIjPlFOxHIw4S74xU" />
+<meta name="google-site-verification" content="76VWdSsOMul72ha_M550TWY8nFy7AVQ2XMma5UN1aD8" />
 <title>Femi — AI Backend Developer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -27,6 +27,7 @@
     --accent3:   #ff6b35;
     --accent4:   #a78bfa;
     --warn:      #fbbf24;
+    --swagger:   #85ea2d;
     --font-mono: 'JetBrains Mono', monospace;
     --font-sans: 'Syne', sans-serif;
   }
@@ -383,7 +384,7 @@
 
   /* ── SECTIONS ─────────────────────────────────── */
   section { padding: 5rem clamp(1.5rem, 8vw, 8rem); }
-  #stack, #services, #projects, #contact { scroll-margin-top: 56px; }
+  #stack, #projects, #contact { scroll-margin-top: 56px; }
 
   .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; }
   .section-num { font-size: 0.7rem; color: var(--accent); letter-spacing: 0.1em; }
@@ -467,76 +468,11 @@
   .tag-d     { color:#60a5fa; border-color:#60a5fa40; background:#60a5fa10; }
   .tag-rn    { color:#00ff9d; border-color:#00ff9d40; background:#00ff9d10; }
   .tag-gh    { color:#e2e8f0; border-color:#e2e8f040; background:#e2e8f008; }
-
-  /* ── SERVICES ─────────────────────────────────── */
-  #services { background: var(--bg); }
-
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .service-card {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 2rem 1.75rem;
-    transition: border-color 0.25s, transform 0.25s;
-    position: relative;
-    overflow: hidden;
-  }
-  .service-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--s-accent, var(--accent)), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .service-card:hover { border-color: var(--s-accent, var(--accent)); transform: translateY(-3px); }
-  .service-card:hover::before { opacity: 1; }
-
-  .service-name {
-    font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--bright);
-    margin-bottom: 0.6rem;
-    letter-spacing: -0.01em;
-  }
-
-  .service-desc {
-    font-size: 0.82rem;
-    color: var(--muted);
-    line-height: 1.8;
-    margin-bottom: 1.25rem;
-  }
-
-  .service-outcomes {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .service-outcomes li {
-    font-size: 0.75rem;
-    color: var(--text);
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  .service-outcomes li::before {
-    content: '→';
-    color: var(--s-accent, var(--accent));
-    flex-shrink: 0;
-    margin-top: 0.05rem;
-  }
+  .tag-fb    { color:#ffca28; border-color:#ffca2840; background:#ffca2810; }
+  .tag-nomba { color:#ff6b6b; border-color:#ff6b6b40; background:#ff6b6b10; }
 
   /* ── PROJECTS ─────────────────────────────────── */
-  #projects { background: var(--bg2); }
+  #projects { background: var(--bg); }
 
   .projects-list { display: flex; flex-direction: column; gap: 2rem; }
 
@@ -582,6 +518,12 @@
     gap: 0.4rem;
     padding: 0 0 0.6rem;
     margin-top: 0.6rem;
+  }
+
+  /* badge row shown when there's no banner image */
+  .banner-badges.no-banner {
+    padding: 1.25rem 1.75rem 0;
+    margin-top: 0;
   }
 
   .project-body { padding: 1.25rem 1.75rem 1.75rem; }
@@ -631,6 +573,58 @@
     margin-bottom: 1rem;
   }
 
+  .project-role {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .project-role span { color: var(--text); }
+
+  .project-ai-note {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-left: 2px solid var(--p-accent, var(--accent2));
+    border-radius: 6px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1.1rem;
+  }
+  .project-ai-note-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--p-accent, var(--accent2));
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .project-ai-note-label::before { content: '◆'; font-size: 0.6rem; }
+  .project-ai-note p {
+    font-size: 0.83rem;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 0.75rem;
+  }
+  .project-ai-note ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .project-ai-note li {
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding-left: 1.1rem;
+    position: relative;
+    line-height: 1.6;
+  }
+  .project-ai-note li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--p-accent, var(--accent2));
+  }
+
   .project-footer {
     display: flex;
     align-items: center;
@@ -672,11 +666,34 @@
     color: var(--bright);
   }
 
+  .proj-link.api-link {
+    color: var(--swagger);
+    border-color: rgba(133,234,45,0.35);
+  }
+  .proj-link.api-link:hover {
+    background: rgba(133,234,45,0.08);
+    border-color: var(--swagger);
+    color: var(--swagger);
+  }
+  .proj-link.api-link .api-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--swagger);
+    box-shadow: 0 0 5px var(--swagger);
+    flex-shrink: 0;
+  }
+
   /* ── CONTACT ──────────────────────────────────── */
-  #contact { background: var(--bg); }
+  #contact { background: var(--bg2); }
   .contact-inner { max-width: 640px; }
-  .contact-prompt { font-size: 0.85rem; color: var(--muted); margin-bottom: 2rem; line-height: 1.9; }
+  .contact-prompt { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.75rem; line-height: 1.9; }
   .contact-prompt .hl { color: var(--accent2); }
+  .contact-secondary {
+    font-size: 0.78rem;
+    color: var(--dim);
+    margin-bottom: 2rem;
+    line-height: 1.8;
+  }
 
   .socials { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2.5rem; }
   .social-link {
@@ -700,7 +717,7 @@
   }
   .social-icon { font-size: 1rem; }
 
-  .terminal-block { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .terminal-block { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .terminal-bar {
     display: flex; align-items: center; gap: 0.4rem;
     padding: 0.6rem 0.9rem;
@@ -777,7 +794,6 @@
   </div>
   <ul class="nav-links">
     <li><a href="#stack">stack</a></li>
-    <li><a href="#services">services</a></li>
     <li><a href="#projects">projects</a></li>
     <li><a href="#contact">contact</a></li>
   </ul>
@@ -795,7 +811,6 @@
 <div class="mobile-menu" id="mobileMenu">
   <ul class="mobile-menu-links">
     <li><a href="#stack">stack</a></li>
-    <li><a href="#services">services</a></li>
     <li><a href="#projects">projects</a></li>
     <li><a href="#contact">contact</a></li>
   </ul>
@@ -808,16 +823,15 @@
       <span class="hero-tag">AI Backend Developer · Nigeria</span>
       <h1 class="hero-name">Femi<span class="accent">.</span></h1>
       <p class="hero-title">
-        I build <span class="hi">AI agents</span> that eliminate manual work.
+        I build <span class="hi">production-grade backend</span> systems.
       </p>
       <p class="hero-bio">
-        Businesses lose hours every day to workflows that should run themselves.
-        I build custom AI agents and backend systems using Python, FastAPI, and LangGraph
-        that automate the repetitive, surface what matters, and scale without the overhead.
+        I build AI-driven backend systems. Using Python, FastAPI, and PostgreSQL, I design
+        scalable APIs and intelligent automation that turn complex workflows into working products.
       </p>
       <div class="hero-cta">
-        <a href="#services" class="btn btn-primary">what I build</a>
-        <a href="#contact" class="btn btn-ghost">work with me</a>
+        <a href="#projects" class="btn btn-primary">view projects</a>
+        <a href="https://github.com/techbyFEMI" target="_blank" class="btn btn-ghost">GitHub</a>
       </div>
     </div>
 
@@ -879,66 +893,55 @@
   </div>
 </section>
 
-<!-- SERVICES -->
-<section id="services">
-  <div class="section-header reveal">
-    <span class="section-num">02</span>
-    <h2 class="section-title">What I Build</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="services-grid">
-
-    <div class="service-card reveal" style="--s-accent:#00c8ff;">
-      <div class="service-name">Custom AI Agents</div>
-      <p class="service-desc">
-        Intelligent agents that handle complex, multi-step tasks autonomously —
-        so your team focuses on decisions, not execution.
-      </p>
-      <ul class="service-outcomes">
-        <li>Document analysis and extraction agents</li>
-        <li>Multi-step research and reasoning pipelines</li>
-        <li>Agents that integrate with your existing tools</li>
-      </ul>
-    </div>
-
-    <div class="service-card reveal" style="--s-accent:#00ff9d;">
-      <div class="service-name">Workflow Automation</div>
-      <p class="service-desc">
-        Turn your slowest, most manual business processes into
-        systems that run themselves — reliably, at scale.
-      </p>
-      <ul class="service-outcomes">
-        <li>Automated data processing pipelines</li>
-        <li>Trigger-based notification and reporting systems</li>
-        <li>API integrations that connect your tools end-to-end</li>
-      </ul>
-    </div>
-
-    <div class="service-card reveal" style="--s-accent:#a78bfa;">
-      <div class="service-name">Custom API Development</div>
-      <p class="service-desc">
-        Scalable, production-grade backends built to power your product —
-        from MVP to thousands of users without rebuilding.
-      </p>
-      <ul class="service-outcomes">
-        <li>REST APIs with authentication and role management</li>
-        <li>AI-powered endpoints integrated into your product</li>
-        <li>Performance-optimized PostgreSQL data layers</li>
-      </ul>
-    </div>
-
-  </div>
-</section>
-
 <!-- PROJECTS -->
 <section id="projects">
   <div class="section-header reveal">
-    <span class="section-num">03</span>
+    <span class="section-num">02</span>
     <h2 class="section-title">Projects</h2>
     <div class="section-line"></div>
   </div>
 
   <div class="projects-list">
+
+    <!-- CampusPay -->
+   
+    <div class="project-card reveal" style="--p-accent:#3b82f6;">
+     <div class="project-banner">
+        <img src="campuspay.png" alt="CMPDx" />
+        <div class="banner-badges">
+          <span class="project-badge badge-live">Live</span>
+        </div>
+      </div>
+      <div class="project-body">
+        <div class="project-meta">
+          <span class="project-name">CampusPay</span>
+        </div>
+        <p class="project-problem">Campus Fintech</p>
+        <p class="project-desc">
+          A pre-paid campus payment platform that removes cash dependency and queue time from
+          student-vendor transactions. Students fund a persistent virtual account, place orders,
+          and lock payment in escrow; vendors get a guaranteed payment signal before they prepare
+          an order and release funds instantly via QR scan on fulfillment. Includes an automated
+          background engine that expires and refunds uncollected orders every 60 seconds.
+        </p>
+        <div class="project-footer">
+          <div class="project-stack">
+            <span class="ptag">FastAPI</span>
+            <span class="ptag">Python 3.12</span>
+            <span class="ptag">PostgreSQL / Neon</span>
+            <span class="ptag">SQLAlchemy 2.0 (Async)</span>
+            <span class="ptag">Pydantic v2</span>
+            <span class="ptag">Nomba API</span>
+            <span class="ptag">Firebase</span>
+          </div>
+          <div class="project-links">
+             <a href="https://campuspay-web.vercel.app" target="_blank" class="proj-link">Live Demo</a>
+             <a href="https://github.com/techbyFEMI/CampusPay" target="_blank" class="proj-link">GitHub</a>
+            <a href="https://campuspay-3f39.onrender.com" target="_blank" class="proj-link api-link"><span class="api-dot"></span>API</a>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- CMPDx -->
     <div class="project-card reveal" style="--p-accent:#00ff9d;">
@@ -952,13 +955,25 @@
         <div class="project-meta">
           <span class="project-name">CMPDx</span>
         </div>
-        <p class="project-problem">Accountability · Productivity Tracking · AI Insights</p>
+        <p class="project-problem">Accountability · Productivity Tracking · AI Coach</p>
         <p class="project-desc">
           A squad-based accountability platform where daily progress is visible to everyone in your group —
-          no hiding, no excuses. Members log tasks, maintain streaks, and compete on a live leaderboard
-          with AI-powered behavioral insights that surface patterns, flag risks, and recommend adjustments
-          before performance drops.
+          no hiding, no excuses. Members log tasks, maintain streaks, and compete on a live leaderboard.
         </p>
+        <div class="project-ai-note">
+          <div class="project-ai-note-label">AI Goal Architect</div>
+          <p>
+            Most habit trackers make you guess how much you can actually handle. CMPDx's Goal Architect
+            reads your real numbers — completion rate, peak and dead days, current pace — and builds a
+            routine sized to your actual capacity, not a generic template.
+          </p>
+          <ul>
+            <li>Describe your goal in plain language</li>
+            <li>The agent reads your real stats, not assumptions</li>
+            <li>Iterate through conversation until the plan actually fits your week</li>
+            <li>Nothing gets added to your Structure until you confirm it</li>
+          </ul>
+        </div>
         <div class="project-footer">
           <div class="project-stack">
             <span class="ptag">FastAPI</span>
@@ -968,7 +983,8 @@
             <span class="ptag">Vercel</span>
           </div>
           <div class="project-links">
-            <a href="https://cmpdx.live" target="_blank" class="proj-link">Live Demo</a>
+            <a href="https://cmpdx.pxxl.run" target="_blank" class="proj-link">Live Demo</a>
+            <a href="#" target="_blank" class="https://routine-backend.pxxl.run/docs"><span class="api-dot"></span>API</a>
           </div>
         </div>
       </div>
@@ -986,7 +1002,7 @@
         <div class="project-meta">
           <span class="project-name">GARD</span>
         </div>
-        <p class="project-problem">AI Agent · Contract Risk · Legal Automation</p>
+        <p class="project-problem">AI System· Contract Risk · Legal Automation</p>
         <p class="project-desc">
           An AI agent that reads freelance contracts and automatically flags hidden risks, unfair clauses,
           and payment traps — before you sign. Surfaces exactly what's wrong and why, with suggested
@@ -1005,6 +1021,8 @@
           <div class="project-links">
             <a href="https://gardfrontend.vercel.app/" target="_blank" class="proj-link">Live Demo</a>
             <a href="https://github.com/techbyFEMI/GARD" target="_blank" class="proj-link">GitHub</a>
+            <a href="#" target="_blank" class="https://gard-iam0.onrender.com"><span class="api-dot"></span>API</a>
+            
           </div>
         </div>
       </div>
@@ -1038,7 +1056,7 @@
             <span class="ptag">Render</span>
           </div>
           <div class="project-links">
-            <a href="https://pjct01.onrender.com/docs" target="_blank" class="proj-link">API Docs</a>
+            <a href="https://pjct01.onrender.com/docs" target="_blank" class="proj-link api-link"><span class="api-dot"></span>API</a>
             <a href="https://github.com/techbyFEMI/PJCT01" target="_blank" class="proj-link">GitHub</a>
           </div>
         </div>
@@ -1059,10 +1077,9 @@
         </div>
         <p class="project-problem">Document Automation · AI Pipeline · PDF Processing</p>
         <p class="project-desc">
-          An automated document intelligence pipeline that ingests raw PDF content and restructures it
-          into organized, pedagogically sound learning material using AI — without manual effort.
-          Handles scanned pages via vision models, processes large documents in chunks, and falls back
-          across multiple LLMs automatically to ensure reliable output at scale.
+          An AI-powered educational platform that ingests PDF lecture notes and restructures their content
+          through Bloom's Taxonomy — turning raw slides into progressive, pedagogically sound learning material.
+          Features multi-model LLM fallback chains, vision model support for scanned pages, and chunked processing.
         </p>
         <div class="project-footer">
           <div class="project-stack">
@@ -1075,7 +1092,7 @@
           </div>
           <div class="project-links">
             <a href="https://github.com/techbyFEMI/EDUCTAR" target="_blank" class="proj-link">GitHub</a>
-            <a href="https://eductar-vpkx.onrender.com/docs#/" target="_blank" class="proj-link">API Docs</a>
+            <a href="https://eductar-vpkx.onrender.com/docs#/" target="_blank" class="proj-link api-link"><span class="api-dot"></span>API</a>
           </div>
         </div>
       </div>
@@ -1087,15 +1104,17 @@
 <!-- CONTACT -->
 <section id="contact">
   <div class="section-header reveal">
-    <span class="section-num">04</span>
+    <span class="section-num">03</span>
     <h2 class="section-title">Contact</h2>
     <div class="section-line"></div>
   </div>
   <div class="contact-inner">
     <p class="contact-prompt reveal">
-      Have a <span class="hl">workflow that's costing you time and money?</span>
-      Let's build an AI system that eliminates it.
-      I'm open to freelance projects, collaborations, and remote engineering roles.
+      I'm <span class="hl">open to roles</span> as an AI/Backend Developer —
+      building scalable APIs and AI-powered products.
+    </p>
+    <p class="contact-secondary reveal">
+      Also open to freelance projects and collaborations alongside that. Find me on X or send a mail.
     </p>
     <div class="socials reveal">
       <a href="https://x.com/build_w_Femi" target="_blank" class="social-link" style="--s-color:#1d9bf0;">
@@ -1126,11 +1145,11 @@
         <span class="t-line"><span class="t-prompt">femi@dev</span> ~ $ <span class="t-cmd">cat profile.json</span></span>
         <span class="t-line"><span class="t-out">{</span></span>
         <span class="t-line"><span class="t-out">&nbsp;&nbsp;"name":</span> <span class="t-val">"Femi"</span><span class="t-out">,</span></span>
-        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"role":</span> <span class="t-val">"AI Backend Engineer"</span><span class="t-out">,</span></span>
+        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"role":</span> <span class="t-val">"AI Backend Developer"</span><span class="t-out">,</span></span>
         <span class="t-line"><span class="t-out">&nbsp;&nbsp;"location":</span> <span class="t-val">"Nigeria"</span><span class="t-out">,</span></span>
         <span class="t-line"><span class="t-out">&nbsp;&nbsp;"stack":</span> <span class="t-val">["FastAPI", "LangGraph", "PostgreSQL", "Python"]</span><span class="t-out">,</span></span>
-        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"builds":</span> <span class="t-val">["AI agents", "workflow automation", "scalable APIs"]</span><span class="t-out">,</span></span>
-        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"open_to_freelance":</span> <span class="t-val">true</span></span>
+        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"seeking":</span> <span class="t-val">"full-time remote roles"</span><span class="t-out">,</span></span>
+        <span class="t-line"><span class="t-out">&nbsp;&nbsp;"open_to_freelance":</span> <span class="t-val">"selectively"</span></span>
         <span class="t-line"><span class="t-out">}</span></span>
         <span class="t-line"><span class="t-prompt">femi@dev</span> ~ $ <span class="t-cursor"></span></span>
       </div>
@@ -1140,7 +1159,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <span>© 2025 Femi · Building AI systems that eliminate manual work</span>
+  <span>© 2025 Femi · Shipping production grade AI-backend systems</span>
   <span><a href="https://x.com/build_w_Femi" target="_blank">@build_w_Femi</a></span>
 </footer>
 
