@@ -218,16 +218,34 @@
     to   { transform: scale(1);   opacity: 1; }
   }
 
-  /* ── HERO ─────────────────────────────────────── */
+  /* ── HERO SLIDER ────────────────────────────── */
   #hero {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 80px clamp(1.5rem, 8vw, 8rem) 4rem;
     position: relative;
     overflow: hidden;
     background: #000;
+    padding: 80px 0 4rem;
+  }
+
+  .hero-track {
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  .hero-track::-webkit-scrollbar { display: none; }
+  .hero-track { scrollbar-width: none; }
+
+  .hero-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    scroll-snap-align: start;
+    padding: 0 clamp(1.5rem, 8vw, 8rem);
   }
 
   .hero-content {
@@ -317,6 +335,138 @@
     transform: scale(1.04);
   }
 
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESUME SLIDE ─────────────────────────────── */
+  .resume-slide-inner {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+  }
+  .resume-col { flex: 1; }
+
+  .resume-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent2);
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+  .resume-eyebrow::before { content: '//'; color: var(--dim); }
+
+  .resume-heading {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--bright);
+    letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
+  }
+  .resume-heading .accent { color: var(--accent); }
+
+  .resume-summary {
+    max-width: 560px;
+    color: var(--text);
+    font-size: 0.86rem;
+    line-height: 1.9;
+    margin-bottom: 2rem;
+    border-left: 2px solid var(--accent2);
+    padding-left: 1rem;
+  }
+
+  .resume-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1rem;
+    max-width: 620px;
+    margin-bottom: 2rem;
+  }
+  .resume-fact {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+  }
+  .resume-fact-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 0.35rem;
+  }
+  .resume-fact-value {
+    font-size: 0.82rem;
+    color: var(--bright);
+  }
+
+  .resume-skills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.25rem; max-width: 620px; }
+
+  .resume-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  /* ── SLIDER CONTROLS ──────────────────────────── */
+  .hero-nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+    background: rgba(10,10,10,0.7);
+    backdrop-filter: blur(6px);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.2s;
+  }
+  .hero-nav-arrow:hover { border-color: var(--accent); color: var(--accent); }
+  .hero-nav-arrow.prev { left: clamp(0.75rem, 3vw, 2.5rem); }
+  .hero-nav-arrow.next { right: clamp(0.75rem, 3vw, 2.5rem); }
+  .hero-nav-arrow[disabled] { opacity: 0.25; cursor: default; pointer-events: none; }
+
+  .hero-dots {
+    position: absolute;
+    bottom: 4.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 2;
+  }
+  .hero-dot {
+    width: 22px; height: 3px;
+    border-radius: 2px;
+    background: var(--border2);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.25s, width 0.25s;
+  }
+  .hero-dot.active { background: var(--accent); width: 34px; }
+
+  .hero-swipe-hint {
+    position: absolute;
+    bottom: 2rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--dim);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    z-index: 1;
+  }
+
   /* ── BUTTONS ─────────────────────────────────── */
   .btn {
     display: inline-flex;
@@ -352,34 +502,15 @@
     color: var(--accent);
     transform: translateY(-1px);
   }
-
-  .hero-scroll {
-    position: absolute;
-    bottom: 2rem; left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.4rem;
-    color: var(--dim);
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    animation: bounce 2s infinite;
-    z-index: 1;
+  .btn-resume {
+    background: var(--accent2);
+    color: #001a10;
+    font-weight: 600;
   }
-  .hero-scroll::after {
-    content: '';
-    width: 1px; height: 40px;
-    background: linear-gradient(to bottom, var(--dim), transparent);
-  }
-  @keyframes bounce {
-    0%,100%{ transform: translateX(-50%) translateY(0); }
-    50%    { transform: translateX(-50%) translateY(6px); }
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
+  .btn-resume:hover {
+    background: #33ffb5;
+    box-shadow: 0 0 20px rgba(0,255,157,0.35);
+    transform: translateY(-1px);
   }
 
   /* ── SECTIONS ─────────────────────────────────── */
@@ -767,12 +898,14 @@
   @media (max-width: 640px) {
     .hero-avatar-wrap { display: none; }
     .nav-avatar { display: block; }
-    .hero-content { flex-direction: column; gap: 0; }
+    .hero-content, .resume-slide-inner { flex-direction: column; gap: 0; }
     .nav-links { display: none; }
     .nav-status { font-size: 0.65rem; }
     .project-footer { flex-direction: column; align-items: flex-start; }
     .project-links { flex-direction: row; }
     .nav-toggle { display: flex; }
+    .hero-nav-arrow { display: none; }
+    .resume-facts { grid-template-columns: 1fr 1fr; }
   }
   @media (min-width: 641px) {
     .nav-avatar { display: none; }
@@ -816,31 +949,84 @@
   </ul>
 </div>
 
-<!-- HERO -->
+<!-- HERO (slideable: intro + resume) -->
 <section id="hero">
-  <div class="hero-content">
-    <div class="hero-text">
-      <span class="hero-tag">AI Backend Developer · Nigeria</span>
-      <h1 class="hero-name">Femi<span class="accent">.</span></h1>
-      <p class="hero-title">
-        I build <span class="hi">production-grade backend</span> systems.
-      </p>
-      <p class="hero-bio">
-        I build AI-driven backend systems. Using Python, FastAPI, and PostgreSQL, I design
-        scalable APIs and intelligent automation that turn complex workflows into working products.
-      </p>
-      <div class="hero-cta">
-        <a href="#projects" class="btn btn-primary">view projects</a>
-        <a href="https://github.com/techbyFEMI" target="_blank" class="btn btn-ghost">GitHub</a>
+  <div class="hero-track" id="heroTrack">
+
+    <!-- Slide 1: intro -->
+    <div class="hero-slide">
+      <div class="hero-content">
+        <div class="hero-text">
+          <span class="hero-tag">AI Backend Developer · Nigeria</span>
+          <h1 class="hero-name">Femi<span class="accent">.</span></h1>
+          <p class="hero-title">
+            I build <span class="hi">production-grade backend</span> systems.
+          </p>
+          <p class="hero-bio">
+            I build AI-driven backend systems. Using Python, FastAPI, and PostgreSQL, I design
+            scalable APIs and intelligent automation that turn complex workflows into working products.
+          </p>
+          <div class="hero-cta">
+            <a href="#projects" class="btn btn-primary">view projects</a>
+            <a href="https://github.com/techbyFEMI" target="_blank" class="btn btn-ghost">GitHub</a>
+          </div>
+        </div>
+
+        <div class="hero-avatar-wrap">
+          <img src="me.jpg" alt="Femi" class="hero-avatar" onclick="openLightbox()" />
+        </div>
       </div>
     </div>
 
-    <div class="hero-avatar-wrap">
-      <img src="me.jpg" alt="Femi" class="hero-avatar" onclick="openLightbox()" />
+    <!-- Slide 2: resume -->
+    <div class="hero-slide">
+      <div class="resume-slide-inner">
+        <div class="resume-col">
+          <span class="resume-eyebrow">Resume</span>
+          <h2 class="resume-heading">Sanusi Ibrahim<span class="accent">.</span></h2>
+          <p class="resume-summary">
+            Builds backend systems that remove the manual, error-prone parts of commerce and operations —
+            guaranteed payments, automated order flow, AI agents that act instead of just chat.
+          </p>
+
+          <div class="resume-facts">
+            <div class="resume-fact">
+              <div class="resume-fact-label">Location</div>
+              <div class="resume-fact-value">Akure, Nigeria</div>
+            </div>
+            <div class="resume-fact">
+              <div class="resume-fact-label">Role</div>
+              <div class="resume-fact-value">AI Backend Developer</div>
+            </div>
+            <div class="resume-fact">
+              <div class="resume-fact-label">Education</div>
+              <div class="resume-fact-value">B.Sc. Data Science, FUTA (in progress)</div>
+            </div>
+            <div class="resume-fact">
+              <div class="resume-fact-label">Focus</div>
+              <div class="resume-fact-value">FastAPI · LangGraph · PostgreSQL</div>
+            </div>
+          </div>
+
+          <div class="resume-cta">
+            <a href="Femi_Resume.pdf" download class="btn btn-resume">download resume</a>
+            <a href="#projects" class="btn btn-ghost">see the work</a>
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 
-  <div class="hero-scroll">scroll</div>
+  <button class="hero-nav-arrow prev" id="heroPrev" aria-label="Previous slide">←</button>
+  <button class="hero-nav-arrow next" id="heroNext" aria-label="Next slide">→</button>
+
+  <div class="hero-dots" id="heroDots">
+    <button class="hero-dot active" data-slide="0" aria-label="Slide 1: Intro"></button>
+    <button class="hero-dot" data-slide="1" aria-label="Slide 2: Resume"></button>
+  </div>
+
+  <div class="hero-swipe-hint">swipe</div>
 </section>
 
 <!-- TECH STACK -->
@@ -904,10 +1090,9 @@
   <div class="projects-list">
 
     <!-- CampusPay -->
-   
     <div class="project-card reveal" style="--p-accent:#3b82f6;">
-     <div class="project-banner">
-        <img src="campuspay.png" alt="CMPDx" />
+      <div class="project-banner">
+        <img src="campuspay.png" alt="CampusPay" />
         <div class="banner-badges">
           <span class="project-badge badge-live">Live</span>
         </div>
@@ -935,8 +1120,8 @@
             <span class="ptag">Firebase</span>
           </div>
           <div class="project-links">
-             <a href="https://campuspay-web.vercel.app" target="_blank" class="proj-link">Live Demo</a>
-             <a href="https://github.com/techbyFEMI/CampusPay" target="_blank" class="proj-link">GitHub</a>
+            <a href="https://campuspay-web.vercel.app" target="_blank" class="proj-link">Live Demo</a>
+            <a href="https://github.com/techbyFEMI/CampusPay" target="_blank" class="proj-link">GitHub</a>
             <a href="https://campuspay-3f39.onrender.com/docs" target="_blank" class="proj-link api-link"><span class="api-dot"></span>API</a>
           </div>
         </div>
@@ -1002,7 +1187,7 @@
         <div class="project-meta">
           <span class="project-name">GARD</span>
         </div>
-        <p class="project-problem">AI System· Contract Risk · Legal Automation</p>
+        <p class="project-problem">AI System · Contract Risk · Legal Automation</p>
         <p class="project-desc">
           An AI agent that reads freelance contracts and automatically flags hidden risks, unfair clauses,
           and payment traps — before you sign. Surfaces exactly what's wrong and why, with suggested
@@ -1021,8 +1206,7 @@
           <div class="project-links">
             <a href="https://gardfrontend.vercel.app/" target="_blank" class="proj-link">Live Demo</a>
             <a href="https://github.com/techbyFEMI/GARD" target="_blank" class="proj-link">GitHub</a>
-            <a href="https://gard-iam0.onrender.com/docs" target="_blank" class="proj-link api-link"><span class="proj-link api-link"></span>API</a>
-            
+            <a href="https://gard-iam0.onrender.com/docs" target="_blank" class="proj-link api-link"><span class="api-dot"></span>API</a>
           </div>
         </div>
       </div>
@@ -1216,6 +1400,51 @@
   navToggle.addEventListener('click', toggleMobileMenu);
   mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileMenu));
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileMenu(); });
+
+  /* ── HERO SLIDER ──────────────────────────────── */
+  (function () {
+    const track = document.getElementById('heroTrack');
+    const slides = Array.from(track.children);
+    const dots = Array.from(document.querySelectorAll('.hero-dot'));
+    const prevBtn = document.getElementById('heroPrev');
+    const nextBtn = document.getElementById('heroNext');
+    let current = 0;
+
+    function updateControls() {
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === slides.length - 1;
+    }
+
+    function goTo(i) {
+      current = Math.max(0, Math.min(slides.length - 1, i));
+      track.scrollTo({ left: slides[current].offsetLeft, behavior: 'smooth' });
+      updateControls();
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+    dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+
+    let scrollTimeout;
+    track.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const idx = Math.round(track.scrollLeft / track.clientWidth);
+        current = Math.max(0, Math.min(slides.length - 1, idx));
+        updateControls();
+      }, 100);
+    }, { passive: true });
+
+    document.getElementById('hero').addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') goTo(current + 1);
+      if (e.key === 'ArrowLeft') goTo(current - 1);
+    });
+
+    window.addEventListener('resize', () => goTo(current));
+
+    updateControls();
+  })();
 
   /* ── SMOOTH SCROLL WITH NAV OFFSET ──────────── */
   document.querySelectorAll('a[href^="#"]').forEach(link => {
