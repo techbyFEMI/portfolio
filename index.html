@@ -611,27 +611,197 @@
   /* ── PROJECTS ─────────────────────────────────── */
   #projects { background: var(--bg); }
 
-  .projects-list { display: flex; flex-direction: column; gap: 2rem; }
-
-  .project-card {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: border-color 0.25s, transform 0.25s;
+  /* ── FOLDER STACK ─────────────────────────────── */
+  .folder-stage {
     position: relative;
+    max-width: 420px;
+    margin: 0 auto;
   }
-  .project-card::after {
-    content: '';
+
+  .folder-stack {
+    position: relative;
+    height: 460px;
+    touch-action: pan-y;
+  }
+
+  .folder-card {
     position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--p-accent, var(--accent));
+    inset: 0;
+    border-radius: 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+    transition: transform 0.55s cubic-bezier(.22,.85,.32,1), opacity 0.4s ease;
+    transform-origin: 12% 8%;
+  }
+  .folder-card[data-pos="0"] { transform: translate(0,0) rotate(0deg) scale(1); z-index: 5; opacity: 1; pointer-events: auto; }
+  .folder-card[data-pos="1"] { transform: translate(16px,-12px) rotate(4deg) scale(0.95); z-index: 4; opacity: 0.92; pointer-events: auto; }
+  .folder-card[data-pos="2"] { transform: translate(30px,-22px) rotate(8deg) scale(0.9); z-index: 3; opacity: 0.78; pointer-events: auto; }
+  .folder-card[data-pos="hidden"] { transform: translate(42px,-30px) rotate(11deg) scale(0.86); z-index: 1; opacity: 0; pointer-events: none; }
+
+  .folder-tab {
+    position: absolute;
+    top: -13px;
+    left: 22px;
+    width: 92px;
+    height: 20px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-bottom: none;
+    border-radius: 7px 7px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    color: var(--f-accent, var(--muted));
+  }
+
+  .folder-cover { flex: 1; overflow: hidden; background: var(--bg2); }
+  .folder-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .folder-info { padding: 0.9rem 1.1rem 1.05rem; border-top: 1px solid var(--border); }
+  .folder-info-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.3rem; }
+  .folder-name { font-family: var(--font-sans); font-weight: 700; font-size: 1.05rem; color: var(--bright); }
+  .folder-problem { font-size: 0.72rem; color: var(--muted); }
+
+  .folder-open-hint {
+    position: absolute;
+    bottom: 0.7rem;
+    right: 0.8rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--f-accent, var(--accent));
+    background: rgba(0,200,255,0.08);
+    border: 1px solid var(--f-accent, rgba(0,200,255,0.3));
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
     opacity: 0;
     transition: opacity 0.3s;
   }
-  .project-card:hover { border-color: var(--p-accent, var(--accent)); transform: translateX(4px); }
-  .project-card:hover::after { opacity: 1; }
+  .folder-card[data-pos="0"] .folder-open-hint { opacity: 1; }
+
+  .folder-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+  .folder-nav-arrow {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .folder-nav-arrow:hover { border-color: var(--accent); color: var(--accent); }
+
+  .folder-dots { display: flex; gap: 0.45rem; }
+  .folder-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border2);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.25s, transform 0.25s;
+  }
+  .folder-dot.active { background: var(--accent); transform: scale(1.3); }
+
+  .folder-hint {
+    text-align: center;
+    margin-top: 0.9rem;
+    color: var(--dim);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* ── PROJECT DETAIL MODAL ─────────────────────── */
+  .project-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem clamp(1rem, 5vw, 3rem);
+  }
+  .project-modal.open { display: flex; }
+  .project-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(8px);
+  }
+  .project-modal-panel {
+    position: relative;
+    width: 100%;
+    max-width: 620px;
+    max-height: 86vh;
+    overflow-y: auto;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    animation: modalPop 0.25s ease;
+  }
+  @keyframes modalPop {
+    from { opacity: 0; transform: scale(0.94) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .project-modal-close {
+    position: absolute;
+    top: 0.75rem; right: 0.75rem;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.2s;
+  }
+  .project-modal-close:hover { border-color: var(--accent); color: var(--accent); }
+  .project-modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .project-modal-nav button {
+    pointer-events: auto;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 0 -17px;
+  }
+  .project-modal-nav button:hover { border-color: var(--accent); color: var(--accent); }
 
   .project-banner {
     width: 100%;
@@ -646,21 +816,6 @@
     border-radius: 6px 6px 0 0;
     border: 1px solid var(--border);
     border-bottom: none;
-    transition: transform 0.4s ease;
-  }
-  .project-card:hover .project-banner img { transform: scale(1.02); }
-
-  .banner-badges {
-    display: flex;
-    gap: 0.4rem;
-    padding: 0 0 0.6rem;
-    margin-top: 0.6rem;
-  }
-
-  /* badge row shown when there's no banner image */
-  .banner-badges.no-banner {
-    padding: 1.25rem 1.75rem 0;
-    margin-top: 0;
   }
 
   .project-body { padding: 1.25rem 1.75rem 1.75rem; }
@@ -709,13 +864,6 @@
     line-height: 1.8;
     margin-bottom: 1rem;
   }
-
-  .project-role {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-bottom: 1rem;
-  }
-  .project-role span { color: var(--text); }
 
   .project-ai-note {
     background: var(--bg2);
@@ -913,6 +1061,9 @@
     .hero-nav-arrow { display: none; }
     .hero-swipe-hint { display: block; }
     .resume-facts { grid-template-columns: 1fr 1fr; }
+    .folder-stack { height: 400px; }
+    .folder-nav-arrow { display: none; }
+    .project-modal-nav { display: none; }
   }
   @media (min-width: 641px) {
     .nav-avatar { display: none; }
@@ -1095,203 +1246,29 @@
     <div class="section-line"></div>
   </div>
 
-  <div class="projects-list">
-
-    <!-- CampusPay -->
-    <div class="project-card reveal" style="--p-accent:#3b82f6;">
-      <div class="project-banner">
-        <img src="campuspay.png" alt="CampusPay" />
-        <div class="banner-badges">
-          <span class="project-badge badge-live">Live</span>
-        </div>
-      </div>
-      <div class="project-body">
-        <div class="project-meta">
-          <span class="project-name">CampusPay</span>
-        </div>
-        <p class="project-problem">Campus Fintech</p>
-        <p class="project-desc">
-          A pre-paid campus payment platform that removes cash dependency and queue time from
-          student-vendor transactions. Students fund a persistent virtual account, place orders,
-          and lock payment in escrow; vendors get a guaranteed payment signal before they prepare
-          an order and release funds instantly via QR scan on fulfillment. Includes an automated
-          background engine that expires and refunds uncollected orders every 60 seconds.
-        </p>
-        <div class="project-footer">
-          <div class="project-stack">
-            <span class="ptag">FastAPI</span>
-            <span class="ptag">Python 3.12</span>
-            <span class="ptag">PostgreSQL / Neon</span>
-            <span class="ptag">SQLAlchemy 2.0 (Async)</span>
-            <span class="ptag">Pydantic v2</span>
-            <span class="ptag">Nomba API</span>
-            <span class="ptag">Firebase</span>
-          </div>
-          <div class="project-links">
-            <a href="https://campuspay-web.vercel.app" target="_blank" class="proj-link">Live Demo</a>
-            <a href="https://github.com/techbyFEMI/CampusPay" target="_blank" class="proj-link">GitHub</a>
-            <a href="https://campuspay-3f39.onrender.com/docs" target="_blank" class="proj-link api-link"><span class="api-dot"></span>API</a>
-          </div>
-        </div>
-      </div>
+  <div class="folder-stage reveal">
+    <div class="folder-stack" id="folderStack"></div>
+    <div class="folder-controls">
+      <button class="folder-nav-arrow" id="folderPrev" aria-label="Previous project">←</button>
+      <div class="folder-dots" id="folderDots"></div>
+      <button class="folder-nav-arrow" id="folderNext" aria-label="Next project">→</button>
     </div>
-
-    <!-- CMPDx -->
-    <div class="project-card reveal" style="--p-accent:#00ff9d;">
-      <div class="project-banner">
-        <img src="cmpdx.png" alt="CMPDx" />
-        <div class="banner-badges">
-          <span class="project-badge badge-live">Live</span>
-        </div>
-      </div>
-      <div class="project-body">
-        <div class="project-meta">
-          <span class="project-name">CMPDx</span>
-        </div>
-        <p class="project-problem">Accountability · Productivity Tracking · AI Coach</p>
-        <p class="project-desc">
-          A squad-based accountability platform where daily progress is visible to everyone in your group —
-          no hiding, no excuses. Members log tasks, maintain streaks, and compete on a live leaderboard.
-        </p>
-        <div class="project-ai-note">
-          <div class="project-ai-note-label">AI Goal Architect</div>
-          <p>
-            Most habit trackers make you guess how much you can actually handle. CMPDx's Goal Architect
-            reads your real numbers — completion rate, peak and dead days, current pace — and builds a
-            routine sized to your actual capacity, not a generic template.
-          </p>
-          <ul>
-            <li>Describe your goal in plain language</li>
-            <li>The agent reads your real stats, not assumptions</li>
-            <li>Iterate through conversation until the plan actually fits your week</li>
-            <li>Nothing gets added to your Structure until you confirm it</li>
-          </ul>
-        </div>
-        <div class="project-footer">
-          <div class="project-stack">
-            <span class="ptag">FastAPI</span>
-            <span class="ptag">Python</span>
-            <span class="ptag">Supabase</span>
-            <span class="ptag">React</span>
-            <span class="ptag">Vercel</span>
-          </div>
-          <div class="project-links">
-            <a href="https://cmpdx.pxxl.run" target="_blank" class="proj-link">Live Demo</a>
-            <a href="https://routine-backend.pxxl.run/docs" target="_blank" class="proj-link api-link"><span class="api-dot"></span>API</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- GARD -->
-    <div class="project-card reveal" style="--p-accent:#ff6b35;">
-      <div class="project-banner">
-        <img src="gardlanding2.png" alt="GARD" />
-        <div class="banner-badges">
-          <span class="project-badge badge-live">Live</span>
-        </div>
-      </div>
-      <div class="project-body">
-        <div class="project-meta">
-          <span class="project-name">GARD</span>
-        </div>
-        <p class="project-problem">AI System · Contract Risk · Legal Automation</p>
-        <p class="project-desc">
-          An AI agent that reads freelance contracts and automatically flags hidden risks, unfair clauses,
-          and payment traps — before you sign. Surfaces exactly what's wrong and why, with suggested
-          replacement language for each flagged clause. Built for freelancers and agencies who can't afford
-          a lawyer on every deal.
-        </p>
-        <div class="project-footer">
-          <div class="project-stack">
-            <span class="ptag">FastAPI</span>
-            <span class="ptag">Python</span>
-            <span class="ptag">OpenRouter</span>
-            <span class="ptag">PostgreSQL</span>
-            <span class="ptag">Pydantic</span>
-            <span class="ptag">Render</span>
-          </div>
-          <div class="project-links">
-            <a href="https://gardfrontend.vercel.app/" target="_blank" class="proj-link">Live Demo</a>
-            <a href="https://github.com/techbyFEMI/GARD" target="_blank" class="proj-link">GitHub</a>
-            <a href="https://gard-iam0.onrender.com/docs" target="_blank" class="proj-link api-link"><span class="api-dot"></span>API</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Health Risk API -->
-    <div class="project-card reveal" style="--p-accent:#00c8ff;">
-      <div class="project-banner">
-        <img src="apiland2.png" alt="Health Risk API" />
-        <div class="banner-badges">
-          <span class="project-badge badge-live">Live</span>
-        </div>
-      </div>
-      <div class="project-body">
-        <div class="project-meta">
-          <span class="project-name">Health Risk API</span>
-        </div>
-        <p class="project-problem">REST API · Automated Scoring · Health Tech</p>
-        <p class="project-desc">
-          A clinical-grade REST API that accepts patient vitals and lifestyle data, computes
-          risk scores automatically, and returns structured, actionable health insights —
-          ready to plug into any health or wellness product without building the intelligence layer from scratch.
-        </p>
-        <div class="project-footer">
-          <div class="project-stack">
-            <span class="ptag">FastAPI</span>
-            <span class="ptag">Python</span>
-            <span class="ptag">SQLAlchemy</span>
-            <span class="ptag">PostgreSQL / Neon</span>
-            <span class="ptag">Pydantic</span>
-            <span class="ptag">Render</span>
-          </div>
-          <div class="project-links">
-            <a href="https://pjct01.onrender.com/docs" target="_blank" class="proj-link api-link"><span class="api-dot"></span>API</a>
-            <a href="https://github.com/techbyFEMI/PJCT01" target="_blank" class="proj-link">GitHub</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Eductar -->
-    <div class="project-card reveal" style="--p-accent:#a78bfa;">
-      <div class="project-banner">
-        <img src="eductar landing.png" alt="Eductar" />
-        <div class="banner-badges">
-          <span class="project-badge badge-live">Live</span>
-        </div>
-      </div>
-      <div class="project-body">
-        <div class="project-meta">
-          <span class="project-name">Eductar</span>
-        </div>
-        <p class="project-problem">Document Automation · AI Pipeline · PDF Processing</p>
-        <p class="project-desc">
-          An AI-powered educational platform that ingests PDF lecture notes and restructures their content
-          through Bloom's Taxonomy — turning raw slides into progressive, pedagogically sound learning material.
-          Features multi-model LLM fallback chains, vision model support for scanned pages, and chunked processing.
-        </p>
-        <div class="project-footer">
-          <div class="project-stack">
-            <span class="ptag">FastAPI</span>
-            <span class="ptag">Python</span>
-            <span class="ptag">OpenRouter</span>
-            <span class="ptag">Vision Models</span>
-            <span class="ptag">PostgreSQL</span>
-            <span class="ptag">APScheduler</span>
-          </div>
-          <div class="project-links">
-            <a href="https://github.com/techbyFEMI/EDUCTAR" target="_blank" class="proj-link">GitHub</a>
-            <a href="https://eductar.pxxl.run/docs" target="_blank" class="proj-link api-link"><span class="api-dot"></span>API</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    <div class="folder-hint">swipe or tap the folder to open</div>
   </div>
 </section>
+
+<!-- PROJECT DETAIL MODAL -->
+<div class="project-modal" id="projectModal">
+  <div class="project-modal-backdrop" id="projectModalBackdrop"></div>
+  <div class="project-modal-panel">
+    <button class="project-modal-close" id="projectModalClose" aria-label="Close">✕</button>
+    <div class="project-modal-nav">
+      <button id="projectModalPrev" aria-label="Previous project">←</button>
+      <button id="projectModalNext" aria-label="Next project">→</button>
+    </div>
+    <div id="projectModalContent"></div>
+  </div>
+</div>
 
 <!-- CONTACT -->
 <section id="contact">
@@ -1452,6 +1429,273 @@
     window.addEventListener('resize', () => goTo(current));
 
     updateControls();
+  })();
+
+  /* ── PROJECT FOLDER STACK + DETAIL MODAL ──────── */
+  (function () {
+    const projects = [
+      {
+        id: 'campuspay', accent: '#3b82f6', banner: 'campuspay.png', badge: 'Live',
+        name: 'CampusPay', problem: 'Campus Fintech',
+        desc: `A pre-paid campus payment platform that removes cash dependency and queue time from
+          student-vendor transactions. Students fund a persistent virtual account, place orders,
+          and lock payment in escrow; vendors get a guaranteed payment signal before they prepare
+          an order and release funds instantly via QR scan on fulfillment. Includes an automated
+          background engine that expires and refunds uncollected orders every 60 seconds.`,
+        stack: ['FastAPI', 'Python 3.12', 'PostgreSQL / Neon', 'SQLAlchemy 2.0 (Async)', 'Pydantic v2', 'Nomba API', 'Firebase'],
+        links: [
+          { label: 'Live Demo', href: 'https://campuspay-web.vercel.app', api: false },
+          { label: 'GitHub', href: 'https://github.com/techbyFEMI/CampusPay', api: false },
+          { label: 'API', href: 'https://campuspay-3f39.onrender.com/docs', api: true }
+        ]
+      },
+      {
+        id: 'cmpdx', accent: '#00ff9d', banner: 'cmpdx.png', badge: 'Live',
+        name: 'CMPDx', problem: 'Accountability · Productivity Tracking · AI Coach',
+        desc: `A squad-based accountability platform where daily progress is visible to everyone in your group —
+          no hiding, no excuses. Members log tasks, maintain streaks, and compete on a live leaderboard.`,
+        aiNote: {
+          label: 'AI Goal Architect',
+          text: `Most habit trackers make you guess how much you can actually handle. CMPDx's Goal Architect
+            reads your real numbers — completion rate, peak and dead days, current pace — and builds a
+            routine sized to your actual capacity, not a generic template.`,
+          bullets: [
+            'Describe your goal in plain language',
+            'The agent reads your real stats, not assumptions',
+            'Iterate through conversation until the plan actually fits your week',
+            'Nothing gets added to your Structure until you confirm it'
+          ]
+        },
+        stack: ['FastAPI', 'Python', 'Supabase', 'React', 'Vercel'],
+        links: [
+          { label: 'Live Demo', href: 'https://cmpdx.pxxl.run', api: false },
+          { label: 'API', href: 'https://routine-backend.pxxl.run/docs', api: true }
+        ]
+      },
+      {
+        id: 'gard', accent: '#ff6b35', banner: 'gardlanding2.png', badge: 'Live',
+        name: 'GARD', problem: 'AI System · Contract Risk · Legal Automation',
+        desc: `An AI agent that reads freelance contracts and automatically flags hidden risks, unfair clauses,
+          and payment traps — before you sign. Surfaces exactly what's wrong and why, with suggested
+          replacement language for each flagged clause. Built for freelancers and agencies who can't afford
+          a lawyer on every deal.`,
+        stack: ['FastAPI', 'Python', 'OpenRouter', 'PostgreSQL', 'Pydantic', 'Render'],
+        links: [
+          { label: 'Live Demo', href: 'https://gardfrontend.vercel.app/', api: false },
+          { label: 'GitHub', href: 'https://github.com/techbyFEMI/GARD', api: false },
+          { label: 'API', href: 'https://gard-iam0.onrender.com/docs', api: true }
+        ]
+      },
+      {
+        id: 'health-risk-api', accent: '#00c8ff', banner: 'apiland2.png', badge: 'Live',
+        name: 'Health Risk API', problem: 'REST API · Automated Scoring · Health Tech',
+        desc: `A clinical-grade REST API that accepts patient vitals and lifestyle data, computes
+          risk scores automatically, and returns structured, actionable health insights —
+          ready to plug into any health or wellness product without building the intelligence layer from scratch.`,
+        stack: ['FastAPI', 'Python', 'SQLAlchemy', 'PostgreSQL / Neon', 'Pydantic', 'Render'],
+        links: [
+          { label: 'API', href: 'https://pjct01.onrender.com/docs', api: true },
+          { label: 'GitHub', href: 'https://github.com/techbyFEMI/PJCT01', api: false }
+        ]
+      },
+      {
+        id: 'eductar', accent: '#a78bfa', banner: 'eductar landing.png', badge: 'Live',
+        name: 'Eductar', problem: 'Document Automation · AI Pipeline · PDF Processing',
+        desc: `An AI-powered educational platform that ingests PDF lecture notes and restructures their content
+          through Bloom's Taxonomy — turning raw slides into progressive, pedagogically sound learning material.
+          Features multi-model LLM fallback chains, vision model support for scanned pages, and chunked processing.`,
+        stack: ['FastAPI', 'Python', 'OpenRouter', 'Vision Models', 'PostgreSQL', 'APScheduler'],
+        links: [
+          { label: 'GitHub', href: 'https://github.com/techbyFEMI/EDUCTAR', api: false },
+          { label: 'API', href: 'https://eductar.pxxl.run/docs', api: true }
+        ]
+      }
+    ];
+
+    let order = projects.map((_, i) => i);   // order[0] = index of front project
+    let introDone = false;
+
+    const stackEl = document.getElementById('folderStack');
+    const dotsEl = document.getElementById('folderDots');
+    const prevBtn = document.getElementById('folderPrev');
+    const nextBtn = document.getElementById('folderNext');
+    const hintEl = document.querySelector('.folder-hint');
+
+    const modal = document.getElementById('projectModal');
+    const modalBackdrop = document.getElementById('projectModalBackdrop');
+    const modalContent = document.getElementById('projectModalContent');
+    const modalClose = document.getElementById('projectModalClose');
+    const modalPrev = document.getElementById('projectModalPrev');
+    const modalNext = document.getElementById('projectModalNext');
+
+    function linksHtml(p) {
+      return p.links.map(l =>
+        `<a href="${l.href}" target="_blank" class="proj-link${l.api ? ' api-link' : ''}">${l.api ? '<span class="api-dot"></span>' : ''}${l.label}</a>`
+      ).join('');
+    }
+
+    function aiNoteHtml(p) {
+      if (!p.aiNote) return '';
+      const bullets = p.aiNote.bullets.map(b => `<li>${b}</li>`).join('');
+      return `<div class="project-ai-note">
+          <div class="project-ai-note-label">${p.aiNote.label}</div>
+          <p>${p.aiNote.text}</p>
+          <ul>${bullets}</ul>
+        </div>`;
+    }
+
+    // ── Render folder stack ──
+    function renderFolders() {
+      stackEl.innerHTML = projects.map((p, i) => {
+        const posInOrder = order.indexOf(i);
+        const pos = posInOrder <= 2 ? String(posInOrder) : 'hidden';
+        return `<div class="folder-card" data-id="${i}" data-pos="${pos}" style="--f-accent:${p.accent}">
+            <div class="folder-tab">${String(i + 1).padStart(2, '0')}</div>
+            <div class="folder-cover"><img src="${p.banner}" alt="${p.name}" loading="lazy" /></div>
+            <div class="folder-info">
+              <div class="folder-info-top">
+                <span class="folder-name">${p.name}</span>
+                <span class="project-badge badge-live">${p.badge}</span>
+              </div>
+              <p class="folder-problem">${p.problem}</p>
+            </div>
+            <div class="folder-open-hint">tap to open</div>
+          </div>`;
+      }).join('');
+
+      Array.from(stackEl.children).forEach(card => {
+        card.addEventListener('click', () => {
+          const idx = Number(card.dataset.id);
+          if (order[0] === idx) {
+            openModal(idx);
+          } else {
+            bringToFront(idx);
+          }
+        });
+      });
+
+      updateDots();
+    }
+
+    function updateDots() {
+      dotsEl.innerHTML = projects.map((_, i) =>
+        `<button class="folder-dot${order[0] === i ? ' active' : ''}" data-id="${i}" aria-label="Show ${projects[i].name}"></button>`
+      ).join('');
+      Array.from(dotsEl.children).forEach(dot => {
+        dot.addEventListener('click', () => bringToFront(Number(dot.dataset.id)));
+      });
+    }
+
+    function bringToFront(idx) {
+      order = [idx, ...order.filter(i => i !== idx)];
+      applyPositions();
+    }
+
+    function next() {
+      order.push(order.shift());
+      applyPositions();
+    }
+    function prev() {
+      order.unshift(order.pop());
+      applyPositions();
+    }
+
+    function applyPositions() {
+      Array.from(stackEl.children).forEach(card => {
+        const idx = Number(card.dataset.id);
+        const posInOrder = order.indexOf(idx);
+        card.dataset.pos = posInOrder <= 2 ? String(posInOrder) : 'hidden';
+      });
+      updateDots();
+    }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    // swipe support
+    let startX = 0, startY = 0, dragging = false;
+    stackEl.addEventListener('pointerdown', (e) => { dragging = true; startX = e.clientX; startY = e.clientY; });
+    stackEl.addEventListener('pointerup', (e) => {
+      if (!dragging) return;
+      dragging = false;
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+        dx < 0 ? next() : prev();
+      }
+    });
+
+    // ── Detail modal ──
+    function renderModal(idx) {
+      const p = projects[idx];
+      modalContent.style.setProperty('--p-accent', p.accent);
+      modalContent.innerHTML = `
+        <div class="project-banner"><img src="${p.banner}" alt="${p.name}" /></div>
+        <div class="project-body">
+          <div class="project-meta">
+            <span class="project-name">${p.name}</span>
+            <span class="project-badge badge-live">${p.badge}</span>
+          </div>
+          <p class="project-problem">${p.problem}</p>
+          <p class="project-desc">${p.desc}</p>
+          ${aiNoteHtml(p)}
+          <div class="project-footer">
+            <div class="project-stack">${p.stack.map(s => `<span class="ptag">${s}</span>`).join('')}</div>
+            <div class="project-links">${linksHtml(p)}</div>
+          </div>
+        </div>`;
+    }
+
+    function openModal(idx) {
+      renderModal(idx);
+      modal.dataset.current = idx;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      bringToFront(idx);
+    }
+    function closeModal() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', closeModal);
+    modalPrev.addEventListener('click', () => {
+      let idx = Number(modal.dataset.current);
+      idx = (idx - 1 + projects.length) % projects.length;
+      openModal(idx);
+    });
+    modalNext.addEventListener('click', () => {
+      let idx = Number(modal.dataset.current);
+      idx = (idx + 1) % projects.length;
+      openModal(idx);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (!modal.classList.contains('open')) return;
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowRight') modalNext.click();
+      if (e.key === 'ArrowLeft') modalPrev.click();
+    });
+
+    // ── Initial render + "sorting" intro animation ──
+    renderFolders();
+    Array.from(stackEl.children).forEach(c => { c.dataset.pos = 'hidden'; });
+
+    const stageObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !introDone) {
+          introDone = true;
+          Array.from(stackEl.children).forEach((card, i) => {
+            setTimeout(() => {
+              const idx = Number(card.dataset.id);
+              const posInOrder = order.indexOf(idx);
+              card.dataset.pos = posInOrder <= 2 ? String(posInOrder) : 'hidden';
+            }, i * 130);
+          });
+          stageObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    stageObserver.observe(document.querySelector('.folder-stage'));
   })();
 
   /* ── SMOOTH SCROLL WITH NAV OFFSET ──────────── */
