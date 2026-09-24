@@ -1459,6 +1459,25 @@
   (function () {
     const projects = [
       {
+        id: 'langgraph-wa-agent', accent: '#00c8ff', badge: 'Live',
+        name: 'LangGraph WhatsApp Sales & SOP Agent', problem: 'B2B AI Automation · Conversational Sales · Workflow Guardrails',
+        desc: `An autonomous 24/7 WhatsApp Business sales agent built on LangGraph designed to turn manual business SOPs into working automated agents. The agent classifies customer intent, handles product/service enquiries, negotiates pricing within strict floor limits, and de-escalates customer complaints while enforcing legal and brand guardrails before sending any message.`,
+        aiNote: {
+          label: 'LangGraph Agent State Machine',
+          text: `Unlike rigid no-code flow tools (n8n/Make), this engine leverages LangGraph's state machine with thread-level state checkpointing per customer phone number.`,
+          bullets: [
+            'Intent Classification Node (Enquiry, Negotiation, Complaint, Booking)',
+            'Dynamic YAML business config engine (swap client business rules without code changes)',
+            'Deterministic Guardrail Node: auto-patches forbidden phrases and enforces price floors',
+            'Human-in-the-Loop (HITL) escalation alerts sent directly to business owner\'s WhatsApp'
+          ]
+        },
+        stack: ['LangGraph', 'Python 3.12', 'FastAPI', 'WhatsApp Cloud API', 'OpenRouter', 'PyYAML'],
+        links: [
+          { label: 'GitHub Vault', href: 'https://github.com/techbyFEMI/ai-engineering-vault', api: false }
+        ]
+      },
+      {
         id: 'campuspay', accent: '#3b82f6', banner: 'campuspay.png', badge: 'Live',
         name: 'CampusPay', problem: 'Campus Fintech',
         desc: `A pre-paid campus payment platform that removes cash dependency and queue time from
